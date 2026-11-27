@@ -18,8 +18,13 @@ export function CategoryCarousel({ products, section }: CategoryCarouselProps) {
   const [animate, setAnimate] = useState(true);
   const isTransitioning = useRef(false);
 
-  // Duplicate list so wrapping from end -> start and start -> end is seamless
-  const trackItems = total > 0 ? [...products, ...products] : [];
+  // Ensure enough cloned items for seamless rotation across 4 visible desktop columns
+  const trackItems =
+    total <= 1
+      ? products
+      : total < 4
+      ? [...products, ...products, ...products, ...products]
+      : [...products, ...products];
 
   useEffect(() => {
     if (!animate) {
@@ -43,7 +48,6 @@ export function CategoryCarousel({ products, section }: CategoryCarouselProps) {
     if (total <= 1 || isTransitioning.current) return;
     isTransitioning.current = true;
     if (index === 0) {
-      // Jump instantaneously to the cloned start at `total`, then animate to `total - 1`
       setAnimate(false);
       setIndex(total);
       requestAnimationFrame(() => {

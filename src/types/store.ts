@@ -1,12 +1,11 @@
 export type StoreSection = 'grocery' | 'meat';
 
 export type GroceryCategory =
-  | 'Vegetables'
   | 'Fruits'
-  | 'Dairy & Paneer'
-  | 'Staples & Grains'
-  | 'Spices & Masala'
-  | 'Beverages';
+  | 'Vegetables'
+  | 'Snacks'
+  | 'Dairy & Bakery'
+  | 'Staples & Beverages';
 
 export type MeatCategory =
   | 'Chicken'

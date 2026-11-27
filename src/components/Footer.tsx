@@ -8,7 +8,7 @@ export function Footer() {
         <div>
           <div className="text-lg font-bold text-white">FreshPrime</div>
           <p className="mt-2 text-sm text-stone-400">
-            Dual-zone e-commerce demo built for separate hygiene handling: farm-fresh groceries and 0–4°C chilled butcher cuts in one seamless checkout.
+            Dual-zone quick-commerce demo built for separate hygiene handling: farm-fresh groceries and 0–4°C chilled butcher cuts in one seamless checkout.
           </p>
         </div>
 

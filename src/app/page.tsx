@@ -11,9 +11,22 @@ import {
 import { CATALOG_PRODUCTS } from '@/data/catalog';
 import { CategoryCarousel } from '@/components/CategoryCarousel';
 
+const GROCERY_CATEGORY_ORDER = [
+  'Fruits',
+  'Vegetables',
+  'Snacks',
+  'Dairy & Bakery',
+  'Staples & Beverages',
+];
+
 export default function HomePage() {
   const allGrocery = CATALOG_PRODUCTS.filter((p) => p.section === 'grocery');
   const allMeat = CATALOG_PRODUCTS.filter((p) => p.section === 'meat');
+
+  const groceryByCategory = GROCERY_CATEGORY_ORDER.map((category) => ({
+    category,
+    items: allGrocery.filter((p) => p.category === category),
+  })).filter((group) => group.items.length > 0);
 
   return (
     <div className="bg-[#FAF9F6]">
@@ -22,7 +35,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#EBE7E0] bg-white px-3.5 py-1 text-xs font-semibold text-[#1E5631] shadow-xs">
             <Sparkles className="h-3.5 w-3.5" />
-            <span>Dual-Zone E-Commerce · Separate Hygiene &amp; Cold-Chain</span>
+            <span>Dual-Zone Quick-Commerce · Separate Hygiene &amp; Cold-Chain</span>
           </div>
 
           <h1 className="mt-4 max-w-3xl text-3xl font-extrabold tracking-tight text-[#1C1917] sm:text-5xl">
@@ -121,10 +134,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Grocery Carousel */}
+      {/* Fresh Grocery Highlights Divided by Categories */}
       <section className="bg-gradient-to-b from-[#F2F7F4]/60 to-[#FAF9F6]">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-          <div className="mb-6 flex items-end justify-between">
+          <div className="mb-8 flex items-end justify-between">
             <div>
               <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#1E5631]">
                 <Leaf className="h-3.5 w-3.5" /> Botanical Market · Ambient &amp; Fresh
@@ -142,7 +155,21 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <CategoryCarousel products={allGrocery} section="grocery" />
+          <div className="space-y-9">
+            {groceryByCategory.map((group) => (
+              <div key={group.category}>
+                <div className="mb-3 flex items-center justify-between">
+                  <h3 className="text-base font-bold text-[#1C1917]">
+                    {group.category}
+                  </h3>
+                  <span className="text-xs font-medium text-[#78716C]">
+                    {group.items.length} item{group.items.length === 1 ? '' : 's'}
+                  </span>
+                </div>
+                <CategoryCarousel products={group.items} section="grocery" />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

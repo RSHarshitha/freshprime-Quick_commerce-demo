@@ -18,10 +18,11 @@ export function FloatingCart() {
     totalItemCount,
     combinedTotal,
     setIsCartOpen,
+    isAuthenticated,
   } = useStore();
   const [isPeekOpen, setIsPeekOpen] = useState(false);
 
-  if (totalItemCount === 0) return null;
+  if (!isAuthenticated || totalItemCount === 0) return null;
 
   const groceryCount = groceryItems.reduce((s, i) => s + i.quantity, 0);
   const meatCount = meatItems.reduce((s, i) => s + i.quantity, 0);

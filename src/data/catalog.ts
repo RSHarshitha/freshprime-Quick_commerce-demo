@@ -294,7 +294,7 @@ export const CATALOG_PRODUCTS: Product[] = [
     division: 'Snacks, Dairy & Bakery',
     category: 'Snacks',
     description: 'California almonds, cashews, pumpkin seeds, and tart cranberries roasted dry.',
-    image: 'https://images.unsplash.com/photo-1536591375315-1988d696058a?auto=format&fit=crop&w=600&q=80',
+    image: 'https://images.unsplash.com/photo-1599599810769-bcde5a160d32?auto=format&fit=crop&w=600&q=80',
     emoji: '🥜',
     accentBg: 'bg-[#F2F7F4]',
     badges: ['Organic', 'High Protein'],

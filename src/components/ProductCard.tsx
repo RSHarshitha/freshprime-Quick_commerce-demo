@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Minus, Plus } from 'lucide-react';
+import { Minus, Plus, ShieldCheck } from 'lucide-react';
 import { Product } from '@/types/store';
 import { useStore } from '@/context/StoreContext';
 
@@ -10,10 +10,16 @@ interface SmokeBurst {
   label: string;
 }
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({
+  product,
+  showcaseOnly = false,
+}: {
+  product: Product;
+  showcaseOnly?: boolean;
+}) {
   const [selectedVariantId, setSelectedVariantId] = useState(product.variants[0].id);
   const [smokeBursts, setSmokeBursts] = useState<SmokeBurst[]>([]);
-  const { cart, addToCart, updateQuantity } = useStore();
+  const { cart, addToCart, updateQuantity, setIsAuthModalOpen } = useStore();
 
   const selectedVariant =
     product.variants.find((v) => v.id === selectedVariantId) || product.variants[0];
@@ -22,9 +28,14 @@ export function ProductCard({ product }: { product: Product }) {
   const cartKey = `${product.id}__${selectedVariant.id}`;
   const cartItem = cart.find((item) => item.key === cartKey);
 
+  const savings =
+    selectedVariant.mrp && selectedVariant.mrp > selectedVariant.price
+      ? selectedVariant.mrp - selectedVariant.price
+      : 0;
+
   const discount =
     selectedVariant.mrp && selectedVariant.mrp > selectedVariant.price
-      ? Math.round(((selectedVariant.mrp - selectedVariant.price) / selectedVariant.mrp) * 100)
+      ? Math.round((savings / selectedVariant.mrp) * 100)
       : 0;
 
   const triggerSmokeEffect = (label: string) => {
@@ -34,6 +45,65 @@ export function ProductCard({ product }: { product: Product }) {
       setSmokeBursts((prev) => prev.filter((b) => b.id !== id));
     }, 680);
   };
+
+  // Pure editorial showroom card on the landing page (no prices/rates, no + Add button)
+  if (showcaseOnly) {
+    return (
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={() => setIsAuthModalOpen(true)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setIsAuthModalOpen(true);
+          }
+        }}
+        className="group flex h-full cursor-pointer flex-col justify-between rounded-2xl border border-white/80 bg-white/85 p-3.5 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-lg"
+      >
+        <div>
+          <div className="relative overflow-hidden rounded-xl bg-[#FAF9F6]">
+            <img
+              src={product.image}
+              alt={product.name}
+              loading="lazy"
+              className="h-48 w-full rounded-xl object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+            <span
+              className={`absolute top-2.5 left-2.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold backdrop-blur-md ${
+                isMeat
+                  ? 'bg-white/90 text-[#881337]'
+                  : 'bg-white/90 text-[#1E5631]'
+              }`}
+            >
+              {product.category}
+            </span>
+          </div>
+
+          <h3 className="mt-3 text-base font-bold tracking-tight text-[#1C1917]">
+            {product.name}
+          </h3>
+          <p className="mt-0.5 truncate text-xs text-[#78716C]">
+            {product.origin}
+          </p>
+        </div>
+
+        <div className="mt-3 flex items-center justify-between border-t border-[#EBE7E0]/80 pt-2.5">
+          <span
+            className={`inline-flex items-center gap-1 text-[11px] font-semibold ${
+              isMeat ? 'text-[#881337]' : 'text-[#1E5631]'
+            }`}
+          >
+            <ShieldCheck className="h-3.5 w-3.5" />
+            <span>{product.badges[0]}</span>
+          </span>
+          <span className="text-[11px] font-semibold text-[#78716C] group-hover:text-[#1C1917]">
+            Tap to view →
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="group flex flex-col justify-between rounded-2xl border border-[#EBE7E0] bg-white p-3.5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
@@ -98,8 +168,8 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
       </div>
 
-      {/* Prominent Bottom Price & + Add / Stepper */}
-      <div className="mt-4 flex items-center justify-between border-t border-[#EBE7E0] pt-3">
+      {/* Bottom Row: Price + Add / Stepper */}
+      <div className="mt-4 flex items-center justify-between gap-2 border-t border-[#EBE7E0] pt-3">
         <div>
           <div className="flex items-baseline gap-1.5">
             <span className="text-lg font-extrabold text-[#1C1917]">

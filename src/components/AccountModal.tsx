@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   X,
   User,
@@ -17,6 +18,7 @@ import {
 import { useStore } from '@/context/StoreContext';
 
 export function AccountModal() {
+  const router = useRouter();
   const {
     user,
     orders,
@@ -144,7 +146,10 @@ export function AccountModal() {
                 </button>
                 <button
                   type="button"
-                  onClick={logout}
+                  onClick={() => {
+                    logout();
+                    router.push('/');
+                  }}
                   className="rounded-xl border border-[#881337]/25 bg-[#FDF2F4] px-3.5 py-1.5 text-xs font-bold text-[#881337] hover:bg-pink-100 cursor-pointer"
                 >
                   Sign Out

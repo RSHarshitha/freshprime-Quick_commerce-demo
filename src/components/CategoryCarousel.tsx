@@ -8,9 +8,14 @@ import { ProductCard } from '@/components/ProductCard';
 interface CategoryCarouselProps {
   products: Product[];
   section: StoreSection;
+  showcaseOnly?: boolean;
 }
 
-export function CategoryCarousel({ products, section }: CategoryCarouselProps) {
+export function CategoryCarousel({
+  products,
+  section,
+  showcaseOnly = false,
+}: CategoryCarouselProps) {
   const total = products.length;
   const isMeat = section === 'meat';
 
@@ -104,7 +109,7 @@ export function CategoryCarousel({ products, section }: CategoryCarouselProps) {
               key={`${product.id}-${idx}`}
               className="w-full shrink-0 sm:w-[calc((100%-20px)/2)] lg:w-[calc((100%-60px)/4)]"
             >
-              <ProductCard product={product} />
+              <ProductCard product={product} showcaseOnly={showcaseOnly} />
             </div>
           ))}
         </div>

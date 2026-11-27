@@ -50,11 +50,14 @@ interface StoreContextValue {
   firstItemCelebrationKey: number;
   celebrationSection: StoreSection;
   user: DemoUser | null;
+  isGuest: boolean;
+  isAuthenticated: boolean;
   isAuthModalOpen: boolean;
   setIsAuthModalOpen: (open: boolean) => void;
   activeAccountTab: AccountTab;
   setActiveAccountTab: (tab: AccountTab) => void;
-  loginDemoCustomer: (name?: string, email?: string) => void;
+  loginDemoCustomer: (name?: string, email?: string, phone?: string) => void;
+  enterGuestMode: () => void;
   logout: () => void;
 }
 
@@ -63,6 +66,7 @@ const StoreContext = createContext<StoreContextValue | null>(null);
 const CART_STORAGE_KEY = 'freshprime_cart_v1';
 const ORDERS_STORAGE_KEY = 'freshprime_orders_v1';
 const USER_STORAGE_KEY = 'freshprime_user_v1';
+const GUEST_STORAGE_KEY = 'freshprime_guest_v1';
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -72,8 +76,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [firstItemCelebrationKey, setFirstItemCelebrationKey] = useState(0);
   const [celebrationSection, setCelebrationSection] = useState<StoreSection>('grocery');
   const [user, setUser] = useState<DemoUser | null>(null);
+  const [isGuest, setIsGuest] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [activeAccountTab, setActiveAccountTab] = useState<AccountTab>(null);
+
+  const isAuthenticated = Boolean(user || isGuest);
 
   useEffect(() => {
     try {
@@ -88,6 +95,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
       const savedUser = localStorage.getItem(USER_STORAGE_KEY);
       if (savedUser) setUser(JSON.parse(savedUser));
+
+      const savedGuest = localStorage.getItem(GUEST_STORAGE_KEY);
+      if (savedGuest === 'true') setIsGuest(true);
     } catch {
       // Ignore storage errors
     } finally {
@@ -121,12 +131,22 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       } else {
         localStorage.removeItem(USER_STORAGE_KEY);
       }
+      if (isGuest) {
+        localStorage.setItem(GUEST_STORAGE_KEY, 'true');
+      } else {
+        localStorage.removeItem(GUEST_STORAGE_KEY);
+      }
     } catch {
       // Ignore
     }
-  }, [user, hydrated]);
+  }, [user, isGuest, hydrated]);
 
   const addToCart = (product: Product, variant: ProductVariant) => {
+    if (!user && !isGuest) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+
     const key = `${product.id}__${variant.id}`;
     setCart((prev) => {
       const wasEmpty = prev.reduce((s, i) => s + i.quantity, 0) === 0;
@@ -181,19 +201,24 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const loginDemoCustomer = (
     name = 'Priya Sharma',
-    email = 'priya.sharma@freshprime.in'
+    email = 'priya.sharma@freshprime.in',
+    phone = '+91 98450 11223'
   ) => {
-    setUser({
-      name,
-      email,
-      phone: '+91 98450 11223',
-    });
+    setIsGuest(false);
+    setUser({ name, email, phone });
     setIsAuthModalOpen(false);
-    setActiveAccountTab('account');
+  };
+
+  const enterGuestMode = () => {
+    setUser(null);
+    setIsGuest(true);
+    setIsAuthModalOpen(false);
   };
 
   const logout = () => {
     setUser(null);
+    setIsGuest(false);
+    setIsCartOpen(false);
     setActiveAccountTab(null);
   };
 
@@ -330,11 +355,14 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         firstItemCelebrationKey,
         celebrationSection,
         user,
+        isGuest,
+        isAuthenticated,
         isAuthModalOpen,
         setIsAuthModalOpen,
         activeAccountTab,
         setActiveAccountTab,
         loginDemoCustomer,
+        enterGuestMode,
         logout,
       }}
     >

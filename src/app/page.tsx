@@ -1,200 +1,229 @@
-import Link from 'next/link';
-import {
-  ArrowRight,
-  Leaf,
-  Beef,
-  ShieldCheck,
-  Snowflake,
-  Truck,
-  Sparkles,
-} from 'lucide-react';
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { CATALOG_PRODUCTS } from '@/data/catalog';
 import { CategoryCarousel } from '@/components/CategoryCarousel';
+import { useStore } from '@/context/StoreContext';
 
-const GROCERY_CATEGORY_ORDER = [
-  'Fruits',
-  'Vegetables',
-  'Snacks',
-  'Dairy & Bakery',
-  'Staples & Beverages',
+const GROCERY_CATEGORY_SHOWCASE = [
+  {
+    category: 'Fruits',
+    tagline: 'Orchard-picked & naturally ripened at dawn',
+    bgImage:
+      'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=1400&q=70',
+    tint: 'from-[#FAF9F6]/80 via-[#F2F7F4]/75 to-[#FAF9F6]/85',
+  },
+  {
+    category: 'Vegetables',
+    tagline: 'Pesticide-free greens & vine-ripened farm produce',
+    bgImage:
+      'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1400&q=70',
+    tint: 'from-[#FAF9F6]/80 via-emerald-50/75 to-[#FAF9F6]/85',
+  },
+  {
+    category: 'Snacks',
+    tagline: 'Small-batch roasted, baked & zero palm oil craft bites',
+    bgImage:
+      'https://images.unsplash.com/photo-1599490659213-e2b9527bd087?auto=format&fit=crop&w=1400&q=70',
+    tint: 'from-[#FAF9F6]/80 via-amber-50/70 to-[#FAF9F6]/85',
+  },
+  {
+    category: 'Dairy & Bakery',
+    tagline: 'Chilled A2 Gir cow dairy & 36-hour fermented sourdough',
+    bgImage:
+      'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1400&q=70',
+    tint: 'from-[#FAF9F6]/80 via-stone-100/75 to-[#FAF9F6]/85',
+  },
+  {
+    category: 'Staples & Beverages',
+    tagline: 'Aged Dehradun grains, wood-pressed oils & cold-pressed juices',
+    bgImage:
+      'https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?auto=format&fit=crop&w=1400&q=70',
+    tint: 'from-[#FAF9F6]/80 via-[#F2F7F4]/75 to-[#FAF9F6]/85',
+  },
 ];
 
 export default function HomePage() {
+  const router = useRouter();
+  const { isAuthenticated, setIsAuthModalOpen } = useStore();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace('/grocery');
+    }
+  }, [isAuthenticated, router]);
+
   const allGrocery = CATALOG_PRODUCTS.filter((p) => p.section === 'grocery');
   const allMeat = CATALOG_PRODUCTS.filter((p) => p.section === 'meat');
 
-  const groceryByCategory = GROCERY_CATEGORY_ORDER.map((category) => ({
-    category,
-    items: allGrocery.filter((p) => p.category === category),
-  })).filter((group) => group.items.length > 0);
+  if (isAuthenticated) {
+    return null;
+  }
 
   return (
-    <div className="bg-[#FAF9F6]">
-      {/* Hero Section */}
-      <section className="border-b border-[#EBE7E0] bg-gradient-to-b from-[#F2F7F4]/60 via-[#FAF9F6] to-[#FAF9F6]">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#EBE7E0] bg-white px-3.5 py-1 text-xs font-semibold text-[#1E5631] shadow-xs">
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>Dual-Zone Quick-Commerce · Separate Hygiene &amp; Cold-Chain</span>
-          </div>
+    <div className="bg-[#FAF9F6] text-[#1C1917]">
+      {/* 1. LOAM-INSPIRED FULL-BLEED EDITORIAL HERO FOLD */}
+      <section className="relative flex min-h-[76vh] items-center justify-center overflow-hidden border-b border-[#EBE7E0]">
+        <img
+          src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1800&q=80"
+          alt="Freshly harvested organic produce"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1C1917]/55 via-[#1C1917]/40 to-[#FAF9F6]" />
 
-          <h1 className="mt-4 max-w-3xl text-3xl font-extrabold tracking-tight text-[#1C1917] sm:text-5xl">
-            Botanical Market &amp; Artisan Butchery —{' '}
-            <span className="text-[#1E5631]">One Cart</span>,{' '}
-            <span className="text-[#881337]">Separate Hygienic Delivery.</span>
-          </h1>
-
-          <p className="mt-4 max-w-2xl text-sm text-[#78716C] sm:text-base">
-            Shop dawn-harvested produce, cold-pressed beverages, and custom-cut meats in one place. Your cart automatically separates Grocery and Meat subtotals, lets you pick independent delivery slots, and dispatches them in dedicated sealed containers.
+        <div className="relative mx-auto max-w-4xl px-6 py-24 text-center text-white">
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-stone-200">
+            Botanical Market &amp; Artisan Butchery
           </p>
+          <h1
+            className="mt-4 text-4xl font-medium leading-[1.08] tracking-tight sm:text-6xl lg:text-7xl"
+            style={{ fontFamily: 'var(--font-serif), Georgia, serif' }}
+          >
+            Harvested at Dawn.
+            <br />
+            Crafted for Your Table.
+          </h1>
+          <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-stone-100/90 sm:text-base">
+            Farm-direct produce, small-batch pantry provisions, and 0–4°C chilled butcher cuts—packed in separate hygienic zones and delivered in minutes.
+          </p>
+        </div>
+      </section>
 
-          {/* Dual Entry Cards */}
-          <div className="mt-8 grid gap-5 md:grid-cols-2">
-            <Link
-              href="/grocery"
-              className="group relative overflow-hidden rounded-3xl border border-[#EBE7E0] bg-gradient-to-br from-[#F2F7F4] to-white p-6 shadow-sm transition hover:border-[#1E5631]/40 hover:shadow-md"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#1E5631] border border-[#1E5631]/15">
-                    <Leaf className="h-3.5 w-3.5" /> Ambient &amp; Fresh Produce Zone
-                  </span>
-                  <h2 className="mt-3 text-2xl font-bold text-[#1C1917]">
-                    Botanical Market &amp; Pantry
-                  </h2>
-                  <p className="mt-1.5 text-sm text-[#78716C]">
-                    Fruits &amp; vegetables, daily staples, A2 paneer &amp; cold-pressed beverages.
-                  </p>
-                </div>
-                <img
-                  src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=240&q=80"
-                  alt="Fresh produce"
-                  className="h-20 w-20 shrink-0 rounded-2xl object-cover shadow-xs"
-                />
-              </div>
-              <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#1E5631] group-hover:translate-x-1 transition">
-                <span>Enter Botanical Market</span>
-                <ArrowRight className="h-4 w-4" />
-              </div>
-            </Link>
-
-            <Link
-              href="/meat"
-              className="group relative overflow-hidden rounded-3xl border border-[#EBE7E0] bg-gradient-to-br from-[#FDF2F4] to-white p-6 shadow-sm transition hover:border-[#881337]/40 hover:shadow-md"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#881337] border border-[#881337]/15">
-                    <Snowflake className="h-3.5 w-3.5" /> Chilled 0–4°C Cold-Chain Zone
-                  </span>
-                  <h2 className="mt-3 text-2xl font-bold text-[#1C1917]">
-                    Artisan Butchery &amp; Seafood
-                  </h2>
-                  <p className="mt-1.5 text-sm text-[#78716C]">
-                    Custom Curry Cut, Biryani Cut, Boneless &amp; Keema. Antibiotic-free, Halal &amp; vacuum-sealed.
-                  </p>
-                </div>
-                <img
-                  src="https://images.unsplash.com/photo-1603048297172-c92544798d5a?auto=format&fit=crop&w=240&q=80"
-                  alt="Artisan cuts"
-                  className="h-20 w-20 shrink-0 rounded-2xl object-cover shadow-xs"
-                />
-              </div>
-              <div className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#881337] group-hover:translate-x-1 transition">
-                <span>Enter Artisan Butchery</span>
-                <ArrowRight className="h-4 w-4" />
-              </div>
-            </Link>
+      {/* 2. LOAM-INSPIRED ASYMMETRICAL OVERLAPPING PHILOSOPHY BLOCK */}
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-24">
+        <div className="grid items-center lg:grid-cols-12">
+          <div className="lg:col-span-7">
+            <div className="overflow-hidden rounded-3xl border border-[#EBE7E0] shadow-sm">
+              <img
+                src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=1200&q=80"
+                alt="Seasonal orchard fruits and vegetables"
+                className="h-[380px] w-full object-cover sm:h-[460px]"
+              />
+            </div>
           </div>
 
-          {/* 3-Pillar Hygiene Strip */}
-          <div className="mt-8 grid gap-4 rounded-2xl border border-[#EBE7E0] bg-white p-4 shadow-sm sm:grid-cols-3">
-            <div className="flex items-center gap-3">
-              <ShieldCheck className="h-6 w-6 shrink-0 text-[#1E5631]" />
-              <div className="text-xs">
-                <div className="font-bold text-[#1C1917]">Separate Packing Zones</div>
-                <div className="text-[#78716C]">Zero cross-contact between veg &amp; raw meat</div>
+          <div className="relative z-10 -mt-12 mx-3 rounded-3xl border border-[#EBE7E0] bg-[#FAF9F6]/95 p-8 shadow-xl backdrop-blur-md sm:p-10 lg:col-span-6 lg:col-start-7 lg:-ml-16 lg:mt-0">
+            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#1E5631]">
+              Dual-Zone Quick-Commerce
+            </p>
+            <h2
+              className="mt-3 text-3xl font-medium leading-snug text-[#1C1917] sm:text-4xl"
+              style={{ fontFamily: 'var(--font-serif), Georgia, serif' }}
+            >
+              Two isolated worlds, one effortless ritual.
+            </h2>
+            <p className="mt-4 text-sm leading-relaxed text-[#78716C]">
+              Every order is physically separated at the source: dawn-picked greens and sourdough travel in breathable ambient crates, while antibiotic-free poultry, mutton, and coastal catch stay sealed at 0–4°C.
+            </p>
+            <div className="mt-6 grid grid-cols-2 gap-4 border-t border-[#EBE7E0] pt-5 text-xs">
+              <div>
+                <div className="font-bold text-[#1E5631]">Botanical Market</div>
+                <div className="mt-0.5 text-[#78716C]">Produce, Snacks, A2 Dairy &amp; Cold-Pressed</div>
               </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Snowflake className="h-6 w-6 shrink-0 text-[#881337]" />
-              <div className="text-xs">
-                <div className="font-bold text-[#1C1917]">Independent Delivery Slots</div>
-                <div className="text-[#78716C]">Pick separate times for Grocery &amp; Meat</div>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Truck className="h-6 w-6 shrink-0 text-[#B45309]" />
-              <div className="text-xs">
-                <div className="font-bold text-[#1C1917]">Single Combined Delivery Fee</div>
-                <div className="text-[#78716C]">Free delivery above ₹499 combined order</div>
+              <div>
+                <div className="font-bold text-[#881337]">Artisan Butchery</div>
+                <div className="mt-0.5 text-[#78716C]">Custom Cuts · Chilled 0–4°C</div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Fresh Grocery Highlights Divided by Categories */}
-      <section className="bg-gradient-to-b from-[#F2F7F4]/60 to-[#FAF9F6]">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-          <div className="mb-8 flex items-end justify-between">
-            <div>
-              <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#1E5631]">
-                <Leaf className="h-3.5 w-3.5" /> Botanical Market · Ambient &amp; Fresh
-              </span>
-              <h2 className="mt-1 text-2xl font-bold text-[#1C1917]">
-                Fresh Grocery Highlights
-              </h2>
+      {/* 3. GROCERY CATEGORY SHOWCASES WITH BLURRED CATEGORY BACKGROUNDS */}
+      {GROCERY_CATEGORY_SHOWCASE.map((group) => {
+        const items = allGrocery.filter((p) => p.category === group.category);
+        if (items.length === 0) return null;
+
+        return (
+          <section
+            key={group.category}
+            className="relative overflow-hidden border-t border-[#EBE7E0]/80"
+          >
+            <div className="pointer-events-none absolute inset-0 overflow-hidden">
+              <img
+                src={group.bgImage}
+                alt=""
+                loading="lazy"
+                className="h-full w-full scale-110 object-cover opacity-30 blur-2xl"
+              />
+              <div className={`absolute inset-0 bg-gradient-to-b ${group.tint}`} />
             </div>
-            <Link
-              href="/grocery"
-              className="inline-flex items-center gap-1 text-sm font-bold text-[#1E5631] hover:text-[#2D7A47]"
+
+            <div className="relative mx-auto max-w-7xl px-4 py-14 sm:px-6">
+              <div className="mb-7 max-w-xl">
+                <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#1E5631]">
+                  Botanical Market
+                </p>
+                <h2
+                  className="mt-1.5 text-3xl font-medium text-[#1C1917] sm:text-4xl"
+                  style={{ fontFamily: 'var(--font-serif), Georgia, serif' }}
+                >
+                  {group.category}
+                </h2>
+                <p className="mt-1 text-sm text-[#78716C]">{group.tagline}</p>
+              </div>
+
+              <CategoryCarousel products={items} section="grocery" showcaseOnly />
+            </div>
+          </section>
+        );
+      })}
+
+      {/* 4. ARTISAN BUTCHERY SHOWCASE WITH BLURRED MEAT BACKGROUND */}
+      <section className="relative overflow-hidden border-t border-[#EBE7E0]">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <img
+            src="https://images.unsplash.com/photo-1603048297172-c92544798d5a?auto=format&fit=crop&w=1400&q=70"
+            alt=""
+            loading="lazy"
+            className="h-full w-full scale-110 object-cover opacity-25 blur-2xl"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#FDF2F4]/85 via-[#FAF9F6]/80 to-[#FAF9F6]" />
+        </div>
+
+        <div className="relative mx-auto max-w-7xl px-4 py-14 sm:px-6">
+          <div className="mb-7 max-w-xl">
+            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#881337]">
+              Artisan Butchery · Chilled 0–4°C
+            </p>
+            <h2
+              className="mt-1.5 text-3xl font-medium text-[#1C1917] sm:text-4xl"
+              style={{ fontFamily: 'var(--font-serif), Georgia, serif' }}
             >
-              <span>View all {allGrocery.length} items</span>
-              <ArrowRight className="h-4 w-4" />
-            </Link>
+              Poultry, Mutton &amp; Coastal Catch
+            </h2>
+            <p className="mt-1 text-sm text-[#78716C]">
+              Antibiotic-free farm poultry, pasture-raised goat &amp; daily-catch seafood.
+            </p>
           </div>
 
-          <div className="space-y-9">
-            {groceryByCategory.map((group) => (
-              <div key={group.category}>
-                <div className="mb-3 flex items-center justify-between">
-                  <h3 className="text-base font-bold text-[#1C1917]">
-                    {group.category}
-                  </h3>
-                  <span className="text-xs font-medium text-[#78716C]">
-                    {group.items.length} item{group.items.length === 1 ? '' : 's'}
-                  </span>
-                </div>
-                <CategoryCarousel products={group.items} section="grocery" />
-              </div>
-            ))}
-          </div>
+          <CategoryCarousel products={allMeat} section="meat" showcaseOnly />
         </div>
       </section>
 
-      {/* Featured Meat Carousel */}
-      <section className="border-t border-[#EBE7E0] bg-gradient-to-b from-[#FDF2F4]/70 to-[#FAF9F6]">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-          <div className="mb-6 flex items-end justify-between">
-            <div>
-              <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#881337]">
-                <Beef className="h-3.5 w-3.5" /> Artisan Butchery · Chilled 0–4°C
-              </span>
-              <h2 className="mt-1 text-2xl font-bold text-[#1C1917]">
-                Butcher &amp; Meat Highlights
-              </h2>
-            </div>
-            <Link
-              href="/meat"
-              className="inline-flex items-center gap-1 text-sm font-bold text-[#881337] hover:text-[#9F1239]"
-            >
-              <span>View all {allMeat.length} items</span>
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-
-          <CategoryCarousel products={allMeat} section="meat" />
+      {/* 5. QUIET EDITORIAL CLOSING FOLD */}
+      <section className="border-t border-[#EBE7E0] bg-[#FAF9F6] py-20 text-center">
+        <div className="mx-auto max-w-2xl px-6">
+          <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-[#78716C]">
+            FreshPrime Quick-Commerce
+          </p>
+          <h2
+            className="mt-3 text-3xl font-medium text-[#1C1917] sm:text-4xl"
+            style={{ fontFamily: 'var(--font-serif), Georgia, serif' }}
+          >
+            Click any item above or sign in to begin shopping.
+          </h2>
+          <p className="mt-3 text-sm text-[#78716C]">
+            Sign in, create an account, or explore freely in Guest Mode.
+          </p>
+          <button
+            type="button"
+            onClick={() => setIsAuthModalOpen(true)}
+            className="mt-7 rounded-full bg-[#1C1917] px-7 py-3 text-xs font-bold uppercase tracking-widest text-white transition hover:bg-[#1E5631] cursor-pointer"
+          >
+            Enter Store
+          </button>
         </div>
       </section>
     </div>
